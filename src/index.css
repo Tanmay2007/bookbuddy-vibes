@@ -2,41 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* BookBuddy Design System - Music meets Literature */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core brand colors */
+    --background: 222 47% 11%;
+    --foreground: 43 74% 93%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 224 47% 16%;
+    --card-foreground: 43 74% 93%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 224 47% 16%;
+    --popover-foreground: 43 74% 93%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Music-inspired primary (deep purple) */
+    --primary: 258 85% 66%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Book-inspired secondary (warm amber) */
+    --secondary: 43 74% 66%;
+    --secondary-foreground: 222 47% 11%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Spotify accent green */
+    --accent: 141 72% 57%;
+    --accent-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted tones */
+    --muted: 224 29% 20%;
+    --muted-foreground: 43 20% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Borders and inputs */
+    --border: 224 29% 20%;
+    --input: 224 29% 20%;
+    --ring: 258 85% 66%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Border radius */
+    --radius: 0.75rem;
 
-    --radius: 0.5rem;
+    /* Custom design tokens */
+    --spotify-green: 141 72% 57%;
+    --book-gold: 43 74% 66%;
+    --vinyl-purple: 258 85% 66%;
+    --page-cream: 43 74% 93%;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(258 85% 66%), hsl(43 74% 66%));
+    --gradient-card: linear-gradient(145deg, hsl(224 47% 16%), hsl(224 29% 20%));
+    --gradient-accent: linear-gradient(90deg, hsl(258 85% 66%), hsl(141 72% 57%));
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(258 85% 66% / 0.3);
+    --shadow-book: 0 8px 32px hsl(222 47% 11% / 0.6);
+    --shadow-vinyl: 0 4px 20px hsl(258 85% 66% / 0.4);
+    
+    /* Animations */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -91,6 +117,69 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer components {
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: var(--shadow-glow); }
+    50% { box-shadow: 0 0 60px hsl(258 85% 66% / 0.5); }
+  }
+  
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Utility classes */
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+  }
+  
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  .bg-gradient-accent {
+    background: var(--gradient-accent);
+    background-size: 200% 200%;
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .shadow-book {
+    box-shadow: var(--shadow-book);
+  }
+  
+  .shadow-vinyl {
+    box-shadow: var(--shadow-vinyl);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 }
 
