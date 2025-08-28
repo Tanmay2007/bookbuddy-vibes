@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Menu, X, Home, Brain, BarChart3, Crown, User, Headphones } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, Home, Brain, BarChart3, Crown, User, Headphones, LogOut } from 'lucide-react';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavigationProps {
   currentPage?: string;
@@ -10,6 +12,8 @@ interface NavigationProps {
 
 export const Navigation = ({ currentPage = 'home', onNavigate }: NavigationProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home },
@@ -23,6 +27,12 @@ export const Navigation = ({ currentPage = 'home', onNavigate }: NavigationProps
 
   const handleNavigation = (pageId: string) => {
     onNavigate?.(pageId);
+    setIsDrawerOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
     setIsDrawerOpen(false);
   };
 
@@ -42,26 +52,51 @@ export const Navigation = ({ currentPage = 'home', onNavigate }: NavigationProps
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavigation(item.id)}
-                  className={cn(
-                    "flex items-center space-x-2 px-4 py-2 rounded-xl transition-smooth",
-                    currentPage === item.id
-                      ? "bg-primary text-primary-foreground shadow-vinyl"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  )}
+          <div className="hidden lg:flex items-center space-x-6">
+            <nav className="flex items-center space-x-6">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavigation(item.id)}
+                    className={cn(
+                      "flex items-center space-x-2 px-4 py-2 rounded-xl transition-smooth",
+                      currentPage === item.id
+                        ? "bg-primary text-primary-foreground shadow-vinyl"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+            
+            {user ? (
+              <div className="flex items-center space-x-3 pl-6 border-l border-border">
+                <span className="text-sm text-muted-foreground">
+                  {user.email}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="flex items-center space-x-2"
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth" className="pl-6 border-l border-border">
+                <Button variant="secondary" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <Button
@@ -120,6 +155,34 @@ export const Navigation = ({ currentPage = 'home', onNavigate }: NavigationProps
               </button>
             );
           })}
+          
+          <div className="pt-6 border-t border-border">
+            {user ? (
+              <div className="space-y-4">
+                <div className="px-4">
+                  <p className="text-sm text-muted-foreground">
+                    Signed in as
+                  </p>
+                  <p className="text-sm font-medium truncate">
+                    {user.email}
+                  </p>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-xl transition-smooth text-left text-muted-foreground hover:text-foreground hover:bg-muted w-full"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Sign Out</span>
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" onClick={() => setIsDrawerOpen(false)}>
+                <Button variant="secondary" className="w-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
         </nav>
       </div>
     </>
