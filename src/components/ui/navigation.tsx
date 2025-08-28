@@ -26,7 +26,11 @@ export const Navigation = ({ currentPage = 'home', onNavigate }: NavigationProps
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   const handleNavigation = (pageId: string) => {
-    onNavigate?.(pageId);
+    if (pageId === 'profile') {
+      navigate('/profile');
+    } else {
+      onNavigate?.(pageId);
+    }
     setIsDrawerOpen(false);
   };
 
