@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/ui/hero-section';
 import { QuizPreview } from '@/components/ui/quiz-preview';
 import { GenreChart } from '@/components/ui/genre-chart';
 import { BookRecommendations } from '@/components/ui/book-recommendations';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
 export const Home = () => {
@@ -101,6 +102,20 @@ export const Home = () => {
               <p className="text-muted-foreground mb-6">
                 Connect your Spotify and let AI find books that match your musical soul
               </p>
+              <div className="flex gap-4 justify-center">
+                <Button 
+                  onClick={handleGetStarted}
+                  variant="hero"
+                >
+                  Get Started with Account
+                </Button>
+                <Button 
+                  onClick={() => navigate('/analyzer')}
+                  variant="outline"
+                >
+                  Try Playlist Analyzer
+                </Button>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">
               © 2024 BookBuddy. Made with ♥ for book and music lovers.

@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      playlist_analysis: {
+        Row: {
+          analysis_result: Json | null
+          created_at: string | null
+          id: string
+          playlist_data: Json
+          playlist_name: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          analysis_result?: Json | null
+          created_at?: string | null
+          id?: string
+          playlist_data: Json
+          playlist_name: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          analysis_result?: Json | null
+          created_at?: string | null
+          id?: string
+          playlist_data?: Json
+          playlist_name?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
