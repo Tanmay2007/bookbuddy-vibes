@@ -1,35 +1,53 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navigation } from '@/components/ui/navigation';
 import { HeroSection } from '@/components/ui/hero-section';
 import { QuizPreview } from '@/components/ui/quiz-preview';
 import { GenreChart } from '@/components/ui/genre-chart';
 import { BookRecommendations } from '@/components/ui/book-recommendations';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Home = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // In a real app, this would check if user is authenticated
-    // For now, we'll show a message about needing Spotify/auth integration
-    alert('To get started, you\'ll need to connect your Spotify account and sign up! This requires backend integration with Supabase.');
+    if (user) {
+      navigate('/profile');
+    } else {
+      navigate('/auth');
+    }
   };
 
   const handleNavigation = (page: string) => {
     setCurrentPage(page);
-    // In a real app, this would handle routing
-    if (page === 'quiz') {
-      alert('Quiz feature requires Spotify integration and user authentication via Supabase!');
+    if (page === 'profile') {
+      if (user) {
+        navigate('/profile');
+      } else {
+        navigate('/auth');
+      }
+    } else if (page === 'quiz') {
+      if (user) {
+        // Quiz feature to be implemented
+        alert('Quiz feature coming soon! Connect your Spotify account in your profile first.');
+      } else {
+        navigate('/auth');
+      }
     } else if (page === 'premium') {
-      alert('Premium features require payment integration with Razorpay via Supabase backend!');
+      alert('Premium features coming soon!');
     } else if (page === 'results') {
-      alert('Results page requires user authentication and stored quiz data via Supabase!');
-    } else if (page === 'profile') {
-      alert('Profile page requires user authentication via Supabase!');
+      if (user) {
+        alert('Results page coming soon!');
+      } else {
+        navigate('/auth');
+      }
     }
   };
 
   const handleUpgradeToPremium = () => {
-    alert('Premium upgrade requires Razorpay payment integration via Supabase backend!');
+    alert('Premium upgrade coming soon!');
   };
 
   return (
