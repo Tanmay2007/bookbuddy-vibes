@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Captcha, CaptchaRef } from '@/components/ui/captcha';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,6 +13,8 @@ export const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<CaptchaRef>(null);
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -34,10 +37,19 @@ export const Auth = () => {
       return;
     }
 
+    if (!captchaToken) {
+      toast({
+        title: "Error",
+        description: "Please complete the CAPTCHA verification",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     const { error } = isSignUp 
-      ? await signUp(email, password)
-      : await signIn(email, password);
+      ? await signUp(email, password, captchaToken)
+      : await signIn(email, password, captchaToken);
 
     if (error) {
       let errorMessage = "An error occurred";
@@ -48,6 +60,8 @@ export const Auth = () => {
         errorMessage = "An account with this email already exists";
       } else if (error.message.includes('Password should be at least')) {
         errorMessage = "Password should be at least 6 characters";
+      } else if (error.message.includes('captcha')) {
+        errorMessage = "CAPTCHA verification failed. Please try again.";
       } else {
         errorMessage = error.message;
       }
@@ -57,6 +71,10 @@ export const Auth = () => {
         description: errorMessage,
         variant: "destructive",
       });
+      
+      // Reset CAPTCHA on error
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     } else if (isSignUp) {
       toast({
         title: "Success!",
@@ -65,6 +83,10 @@ export const Auth = () => {
     }
 
     setLoading(false);
+  };
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
   };
 
   return (
@@ -105,17 +127,23 @@ export const Auth = () => {
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              variant="hero"
-              disabled={loading}
-            >
-              {loading 
-                ? (isSignUp ? 'Creating Account...' : 'Signing In...') 
-                : (isSignUp ? 'Create Account' : 'Sign In')
-              }
-            </Button>
+            <div className="space-y-4">
+              <Captcha 
+                ref={captchaRef}
+                onVerify={handleCaptchaChange}
+              />
+              <Button 
+                type="submit" 
+                className="w-full" 
+                variant="hero"
+                disabled={loading || !captchaToken}
+              >
+                {loading 
+                  ? (isSignUp ? 'Creating Account...' : 'Signing In...') 
+                  : (isSignUp ? 'Create Account' : 'Sign In')
+                }
+              </Button>
+            </div>
           </form>
           
           <div className="mt-6 text-center">
