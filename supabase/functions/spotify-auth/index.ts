@@ -11,6 +11,42 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
+  // Handle Spotify OAuth callback (GET request with code and state parameters)
+  if (req.method === 'GET') {
+    const url = new URL(req.url)
+    const code = url.searchParams.get('code')
+    const state = url.searchParams.get('state')
+    const error = url.searchParams.get('error')
+
+    if (error) {
+      // Redirect to frontend with error
+      return new Response(null, {
+        status: 302,
+        headers: {
+          'Location': `${url.origin}/auth?error=${encodeURIComponent(error)}`
+        }
+      })
+    }
+
+    if (code && state) {
+      // Redirect to frontend with code and state for processing
+      return new Response(null, {
+        status: 302,
+        headers: {
+          'Location': `${url.origin}/auth?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`
+        }
+      })
+    }
+
+    // If no code or error, redirect to auth page
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': `${url.origin}/auth`
+      }
+    })
+  }
+
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -30,7 +66,7 @@ serve(async (req) => {
 
     if (action === 'get_auth_url') {
       const clientId = Deno.env.get('SPOTIFY_CLIENT_ID')
-      const redirectUri = `${req.headers.get('origin')}/auth`
+      const redirectUri = `https://vqnnievbbegnztbiztlc.supabase.co/functions/v1/spotify-auth`
       
       const scope = [
         'user-read-private',
@@ -61,7 +97,7 @@ serve(async (req) => {
       
       const clientId = Deno.env.get('SPOTIFY_CLIENT_ID')
       const clientSecret = Deno.env.get('SPOTIFY_CLIENT_SECRET')
-      const redirectUri = `${req.headers.get('origin')}/auth`
+      const redirectUri = `https://vqnnievbbegnztbiztlc.supabase.co/functions/v1/spotify-auth`
 
       // Exchange code for tokens
       const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {

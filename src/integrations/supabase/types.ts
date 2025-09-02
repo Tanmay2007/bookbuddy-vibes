@@ -68,6 +68,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_playlists: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          spotify_data: Json | null
+          spotify_playlist_id: string
+          track_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          spotify_data?: Json | null
+          spotify_playlist_id: string
+          track_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          spotify_data?: Json | null
+          spotify_playlist_id?: string
+          track_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_spotify_tokens: {
         Row: {
           access_token: string
@@ -76,6 +115,7 @@ export type Database = {
           id: string
           refresh_token: string
           scope: string | null
+          spotify_user_id: string | null
           updated_at: string
           user_id: string
         }
@@ -86,6 +126,7 @@ export type Database = {
           id?: string
           refresh_token: string
           scope?: string | null
+          spotify_user_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -96,6 +137,7 @@ export type Database = {
           id?: string
           refresh_token?: string
           scope?: string | null
+          spotify_user_id?: string | null
           updated_at?: string
           user_id?: string
         }
